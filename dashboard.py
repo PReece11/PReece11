@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import altair as alt
@@ -47,34 +48,19 @@ tab1, tab2, tab3 = st.tabs(["📊 Charts", "🗺️ Map", "📋 Data"])
 
 with tab1:
     st.subheader("Average Price by Room Type")
-
-    # Calculate average price
     avg_price = filtered.groupby("room_type")["price"].mean().reset_index()
-
-    # Define selection
-    room_select = alt.selection_single(fields=["room_type"], empty="all")
-
-    # Interactive bar chart
     bar_chart = alt.Chart(avg_price).mark_bar().encode(
         x=alt.X("room_type:N", title="Room Type"),
         y=alt.Y("price:Q", title="Average Price ($)"),
-        color=alt.condition(room_select, alt.value("steelblue"), alt.value("lightgray")),
         tooltip=["room_type", "price"]
-    ).add_params(room_select).properties(width=600)
-
+    ).properties(width=600)
     st.altair_chart(bar_chart, use_container_width=True)
 
     st.subheader("Price Distribution")
-
-    # Interactive histogram filtered by selected room type
-    hist_chart = alt.Chart(filtered).transform_filter(
-        room_select
-    ).mark_bar().encode(
+    hist_chart = alt.Chart(filtered).mark_bar().encode(
         x=alt.X("price:Q", bin=alt.Bin(maxbins=40), title="Price ($)"),
-        y=alt.Y("count()", title="Number of Listings"),
-        tooltip=["price"]
+        y=alt.Y("count()", title="Number of Listings")
     ).properties(width=600)
-
     st.altair_chart(hist_chart, use_container_width=True)
 
 with tab2:
