@@ -46,7 +46,7 @@ st.markdown(
 tab1, tab2, tab3 = st.tabs(["📊 Charts", "🗺️ Map", "📋 Data"])
 
 with tab1:
-st.subheader("Average Price by Room Type")
+    st.subheader("Average Price by Room Type")
 
     # Calculate average price
     avg_price = filtered.groupby("room_type")["price"].mean().reset_index()
