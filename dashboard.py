@@ -1,640 +1,72 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 1,
-   "id": "a163b9f4-499f-4532-bf3d-f8fdacdcafa5",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "<class 'pandas.core.frame.DataFrame'>\n",
-      "RangeIndex: 36125 entries, 0 to 36124\n",
-      "Data columns (total 79 columns):\n",
-      " #   Column                                        Non-Null Count  Dtype  \n",
-      "---  ------                                        --------------  -----  \n",
-      " 0   id                                            36125 non-null  int64  \n",
-      " 1   listing_url                                   36125 non-null  object \n",
-      " 2   scrape_id                                     36125 non-null  int64  \n",
-      " 3   last_scraped                                  36125 non-null  object \n",
-      " 4   source                                        36125 non-null  object \n",
-      " 5   name                                          36125 non-null  object \n",
-      " 6   description                                   34983 non-null  object \n",
-      " 7   neighborhood_overview                         17428 non-null  object \n",
-      " 8   picture_url                                   36125 non-null  object \n",
-      " 9   host_id                                       36125 non-null  int64  \n",
-      " 10  host_url                                      36125 non-null  object \n",
-      " 11  host_name                                     36119 non-null  object \n",
-      " 12  host_since                                    36119 non-null  object \n",
-      " 13  host_location                                 26691 non-null  object \n",
-      " 14  host_about                                    24581 non-null  object \n",
-      " 15  host_response_time                            33326 non-null  object \n",
-      " 16  host_response_rate                            33326 non-null  object \n",
-      " 17  host_acceptance_rate                          33938 non-null  object \n",
-      " 18  host_is_superhost                             35451 non-null  object \n",
-      " 19  host_thumbnail_url                            36119 non-null  object \n",
-      " 20  host_picture_url                              36119 non-null  object \n",
-      " 21  host_neighbourhood                            28040 non-null  object \n",
-      " 22  host_listings_count                           36119 non-null  float64\n",
-      " 23  host_total_listings_count                     36119 non-null  float64\n",
-      " 24  host_verifications                            36119 non-null  object \n",
-      " 25  host_has_profile_pic                          36119 non-null  object \n",
-      " 26  host_identity_verified                        36119 non-null  object \n",
-      " 27  neighbourhood                                 17428 non-null  object \n",
-      " 28  neighbourhood_cleansed                        36125 non-null  object \n",
-      " 29  neighbourhood_group_cleansed                  36125 non-null  object \n",
-      " 30  latitude                                      36125 non-null  float64\n",
-      " 31  longitude                                     36125 non-null  float64\n",
-      " 32  property_type                                 36125 non-null  object \n",
-      " 33  room_type                                     36125 non-null  object \n",
-      " 34  accommodates                                  36125 non-null  int64  \n",
-      " 35  bathrooms                                     31580 non-null  float64\n",
-      " 36  bathrooms_text                                36104 non-null  object \n",
-      " 37  bedrooms                                      35509 non-null  float64\n",
-      " 38  beds                                          31551 non-null  float64\n",
-      " 39  amenities                                     36125 non-null  object \n",
-      " 40  price                                         31544 non-null  object \n",
-      " 41  minimum_nights                                36125 non-null  int64  \n",
-      " 42  maximum_nights                                36125 non-null  int64  \n",
-      " 43  minimum_minimum_nights                        36125 non-null  int64  \n",
-      " 44  maximum_minimum_nights                        36125 non-null  int64  \n",
-      " 45  minimum_maximum_nights                        36125 non-null  int64  \n",
-      " 46  maximum_maximum_nights                        36125 non-null  int64  \n",
-      " 47  minimum_nights_avg_ntm                        36125 non-null  float64\n",
-      " 48  maximum_nights_avg_ntm                        36125 non-null  float64\n",
-      " 49  calendar_updated                              0 non-null      float64\n",
-      " 50  has_availability                              35762 non-null  object \n",
-      " 51  availability_30                               36125 non-null  int64  \n",
-      " 52  availability_60                               36125 non-null  int64  \n",
-      " 53  availability_90                               36125 non-null  int64  \n",
-      " 54  availability_365                              36125 non-null  int64  \n",
-      " 55  calendar_last_scraped                         36125 non-null  object \n",
-      " 56  number_of_reviews                             36125 non-null  int64  \n",
-      " 57  number_of_reviews_ltm                         36125 non-null  int64  \n",
-      " 58  number_of_reviews_l30d                        36125 non-null  int64  \n",
-      " 59  availability_eoy                              36125 non-null  int64  \n",
-      " 60  number_of_reviews_ly                          36125 non-null  int64  \n",
-      " 61  estimated_occupancy_l365d                     36125 non-null  int64  \n",
-      " 62  estimated_revenue_l365d                       31544 non-null  float64\n",
-      " 63  first_review                                  28065 non-null  object \n",
-      " 64  last_review                                   28065 non-null  object \n",
-      " 65  review_scores_rating                          28065 non-null  float64\n",
-      " 66  review_scores_accuracy                        28058 non-null  float64\n",
-      " 67  review_scores_cleanliness                     28058 non-null  float64\n",
-      " 68  review_scores_checkin                         28056 non-null  float64\n",
-      " 69  review_scores_communication                   28058 non-null  float64\n",
-      " 70  review_scores_location                        28057 non-null  float64\n",
-      " 71  review_scores_value                           28057 non-null  float64\n",
-      " 72  license                                       29624 non-null  object \n",
-      " 73  instant_bookable                              36125 non-null  object \n",
-      " 74  calculated_host_listings_count                36125 non-null  int64  \n",
-      " 75  calculated_host_listings_count_entire_homes   36125 non-null  int64  \n",
-      " 76  calculated_host_listings_count_private_rooms  36125 non-null  int64  \n",
-      " 77  calculated_host_listings_count_shared_rooms   36125 non-null  int64  \n",
-      " 78  reviews_per_month                             28065 non-null  float64\n",
-      "dtypes: float64(19), int64(24), object(36)\n",
-      "memory usage: 21.8+ MB\n"
-     ]
-    }
-   ],
-   "source": [
-    "# app.py\n",
-    "import pandas as pd\n",
-    "import altair as alt\n",
-    "import streamlit as st\n",
-    "\n",
-    "# Load full CSV\n",
-    "df = pd.read_csv(\"listings.csv\")\n",
-    "\n",
-    "# Save compressed version\n",
-    "df.to_csv(\"listings.csv.gz\", index=False, compression=\"gzip\")\n",
-    "\n",
-    "# Display the first few rows to understand the structure\n",
-    "df.info()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 2,
-   "id": "934f9e3c-95df-40c4-9811-89b5c6a41bf8",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Requirement already satisfied: streamlit in c:\\users\\reece\\anaconda3\\lib\\site-packages (1.30.0)\n",
-      "Requirement already satisfied: altair<6,>=4.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (5.0.1)\n",
-      "Requirement already satisfied: blinker<2,>=1.0.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (1.6.2)\n",
-      "Requirement already satisfied: cachetools<6,>=4.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (4.2.2)\n",
-      "Requirement already satisfied: click<9,>=7.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (8.1.7)\n",
-      "Requirement already satisfied: importlib-metadata<8,>=1.4 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (7.0.1)\n",
-      "Requirement already satisfied: numpy<2,>=1.19.3 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (1.26.4)\n",
-      "Requirement already satisfied: packaging<24,>=16.8 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (23.1)\n",
-      "Requirement already satisfied: pandas<3,>=1.3.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (2.1.4)\n",
-      "Requirement already satisfied: pillow<11,>=7.1.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (10.2.0)\n",
-      "Requirement already satisfied: protobuf<5,>=3.20 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (3.20.3)\n",
-      "Requirement already satisfied: pyarrow>=6.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (14.0.2)\n",
-      "Requirement already satisfied: python-dateutil<3,>=2.7.3 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (2.8.2)\n",
-      "Requirement already satisfied: requests<3,>=2.27 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (2.32.3)\n",
-      "Requirement already satisfied: rich<14,>=10.14.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (13.3.5)\n",
-      "Requirement already satisfied: tenacity<9,>=8.1.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (8.2.2)\n",
-      "Requirement already satisfied: toml<2,>=0.10.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (0.10.2)\n",
-      "Requirement already satisfied: typing-extensions<5,>=4.3.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (4.12.2)\n",
-      "Requirement already satisfied: tzlocal<6,>=1.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (2.1)\n",
-      "Requirement already satisfied: validators<1,>=0.2 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (0.18.2)\n",
-      "Requirement already satisfied: gitpython!=3.1.19,<4,>=3.0.7 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (3.1.37)\n",
-      "Requirement already satisfied: pydeck<1,>=0.8.0b4 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (0.8.0)\n",
-      "Requirement already satisfied: tornado<7,>=6.0.3 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (6.3.3)\n",
-      "Requirement already satisfied: watchdog>=2.1.5 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from streamlit) (2.1.6)\n",
-      "Requirement already satisfied: jinja2 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from altair<6,>=4.0->streamlit) (3.1.3)\n",
-      "Requirement already satisfied: jsonschema>=3.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from altair<6,>=4.0->streamlit) (4.19.2)\n",
-      "Requirement already satisfied: toolz in c:\\users\\reece\\anaconda3\\lib\\site-packages (from altair<6,>=4.0->streamlit) (0.12.0)\n",
-      "Requirement already satisfied: colorama in c:\\users\\reece\\anaconda3\\lib\\site-packages (from click<9,>=7.0->streamlit) (0.4.6)\n",
-      "Requirement already satisfied: gitdb<5,>=4.0.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from gitpython!=3.1.19,<4,>=3.0.7->streamlit) (4.0.7)\n",
-      "Requirement already satisfied: zipp>=0.5 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from importlib-metadata<8,>=1.4->streamlit) (3.17.0)\n",
-      "Requirement already satisfied: pytz>=2020.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from pandas<3,>=1.3.0->streamlit) (2023.3.post1)\n",
-      "Requirement already satisfied: tzdata>=2022.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from pandas<3,>=1.3.0->streamlit) (2023.3)\n",
-      "Requirement already satisfied: six>=1.5 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from python-dateutil<3,>=2.7.3->streamlit) (1.16.0)\n",
-      "Requirement already satisfied: charset-normalizer<4,>=2 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (2.0.4)\n",
-      "Requirement already satisfied: idna<4,>=2.5 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (3.4)\n",
-      "Requirement already satisfied: urllib3<3,>=1.21.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (2.0.7)\n",
-      "Requirement already satisfied: certifi>=2017.4.17 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (2025.4.26)\n",
-      "Requirement already satisfied: markdown-it-py<3.0.0,>=2.2.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from rich<14,>=10.14.0->streamlit) (2.2.0)\n",
-      "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from rich<14,>=10.14.0->streamlit) (2.15.1)\n",
-      "Requirement already satisfied: decorator>=3.4.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from validators<1,>=0.2->streamlit) (5.1.1)\n",
-      "Requirement already satisfied: smmap<5,>=3.0.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from gitdb<5,>=4.0.1->gitpython!=3.1.19,<4,>=3.0.7->streamlit) (4.0.0)\n",
-      "Requirement already satisfied: MarkupSafe>=2.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from jinja2->altair<6,>=4.0->streamlit) (2.1.3)\n",
-      "Requirement already satisfied: attrs>=22.2.0 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (23.1.0)\n",
-      "Requirement already satisfied: jsonschema-specifications>=2023.03.6 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (2023.7.1)\n",
-      "Requirement already satisfied: referencing>=0.28.4 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (0.30.2)\n",
-      "Requirement already satisfied: rpds-py>=0.7.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (0.10.6)\n",
-      "Requirement already satisfied: mdurl~=0.1 in c:\\users\\reece\\anaconda3\\lib\\site-packages (from markdown-it-py<3.0.0,>=2.2.0->rich<14,>=10.14.0->streamlit) (0.1.0)\n"
-     ]
-    }
-   ],
-   "source": [
-    "!pip install streamlit"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 3,
-   "id": "74adb9ff-0d25-4e10-9491-fecf13024d11",
-   "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/html": [
-       "<div>\n",
-       "<style scoped>\n",
-       "    .dataframe tbody tr th:only-of-type {\n",
-       "        vertical-align: middle;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe tbody tr th {\n",
-       "        vertical-align: top;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe thead th {\n",
-       "        text-align: right;\n",
-       "    }\n",
-       "</style>\n",
-       "<table border=\"1\" class=\"dataframe\">\n",
-       "  <thead>\n",
-       "    <tr style=\"text-align: right;\">\n",
-       "      <th></th>\n",
-       "      <th>id</th>\n",
-       "      <th>listing_url</th>\n",
-       "      <th>scrape_id</th>\n",
-       "      <th>last_scraped</th>\n",
-       "      <th>source</th>\n",
-       "      <th>name</th>\n",
-       "      <th>description</th>\n",
-       "      <th>neighborhood_overview</th>\n",
-       "      <th>picture_url</th>\n",
-       "      <th>host_id</th>\n",
-       "      <th>...</th>\n",
-       "      <th>review_scores_communication</th>\n",
-       "      <th>review_scores_location</th>\n",
-       "      <th>review_scores_value</th>\n",
-       "      <th>license</th>\n",
-       "      <th>instant_bookable</th>\n",
-       "      <th>calculated_host_listings_count</th>\n",
-       "      <th>calculated_host_listings_count_entire_homes</th>\n",
-       "      <th>calculated_host_listings_count_private_rooms</th>\n",
-       "      <th>calculated_host_listings_count_shared_rooms</th>\n",
-       "      <th>reviews_per_month</th>\n",
-       "    </tr>\n",
-       "  </thead>\n",
-       "  <tbody>\n",
-       "    <tr>\n",
-       "      <th>0</th>\n",
-       "      <td>5269</td>\n",
-       "      <td>https://www.airbnb.com/rooms/5269</td>\n",
-       "      <td>20250306035046</td>\n",
-       "      <td>2025-03-14</td>\n",
-       "      <td>city scrape</td>\n",
-       "      <td>Upcountry Hospitality in the 'Auwai Suite</td>\n",
-       "      <td>The 'Auwai Suite is a lovely, self-contained a...</td>\n",
-       "      <td>We are located on the \"sunny side\" of Waimea, ...</td>\n",
-       "      <td>https://a0.muscache.com/pictures/5b52b72f-5a09...</td>\n",
-       "      <td>7620</td>\n",
-       "      <td>...</td>\n",
-       "      <td>4.85</td>\n",
-       "      <td>5.00</td>\n",
-       "      <td>4.85</td>\n",
-       "      <td>119-269-5808-01R</td>\n",
-       "      <td>f</td>\n",
-       "      <td>3</td>\n",
-       "      <td>3</td>\n",
-       "      <td>0</td>\n",
-       "      <td>0</td>\n",
-       "      <td>0.24</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>1</th>\n",
-       "      <td>5387</td>\n",
-       "      <td>https://www.airbnb.com/rooms/5387</td>\n",
-       "      <td>20250306035046</td>\n",
-       "      <td>2025-03-15</td>\n",
-       "      <td>city scrape</td>\n",
-       "      <td>Hale Koa Studio &amp; 1 Bedroom Units!!</td>\n",
-       "      <td>This Wonderful Spacious Studio apt/flat is in ...</td>\n",
-       "      <td>IN a Farm belt area with small commercial farm...</td>\n",
-       "      <td>https://a0.muscache.com/pictures/1170713/dca6a...</td>\n",
-       "      <td>7878</td>\n",
-       "      <td>...</td>\n",
-       "      <td>4.88</td>\n",
-       "      <td>4.74</td>\n",
-       "      <td>4.78</td>\n",
-       "      <td>TA-163-133-0304-01</td>\n",
-       "      <td>t</td>\n",
-       "      <td>2</td>\n",
-       "      <td>2</td>\n",
-       "      <td>0</td>\n",
-       "      <td>0</td>\n",
-       "      <td>1.26</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>2</th>\n",
-       "      <td>5480</td>\n",
-       "      <td>https://www.airbnb.com/rooms/5480</td>\n",
-       "      <td>20250306035046</td>\n",
-       "      <td>2025-03-14</td>\n",
-       "      <td>city scrape</td>\n",
-       "      <td>Isle Of You Naturally Farm Retreat</td>\n",
-       "      <td>The Best Choice for your Clothing Optional Nud...</td>\n",
-       "      <td>We are located on a rural one lane road going ...</td>\n",
-       "      <td>https://a0.muscache.com/pictures/75530989/8ed3...</td>\n",
-       "      <td>8145</td>\n",
-       "      <td>...</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>f</td>\n",
-       "      <td>3</td>\n",
-       "      <td>0</td>\n",
-       "      <td>3</td>\n",
-       "      <td>0</td>\n",
-       "      <td>NaN</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>3</th>\n",
-       "      <td>5532</td>\n",
-       "      <td>https://www.airbnb.com/rooms/5532</td>\n",
-       "      <td>20250306035046</td>\n",
-       "      <td>2025-03-12</td>\n",
-       "      <td>previous scrape</td>\n",
-       "      <td>2BR Waialua Beach Condo w/ Saltwater Pool &amp; Sauna</td>\n",
-       "      <td>This split-level condo is right across the str...</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>https://a0.muscache.com/pictures/13743/134691a...</td>\n",
-       "      <td>8279</td>\n",
-       "      <td>...</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>f</td>\n",
-       "      <td>1</td>\n",
-       "      <td>1</td>\n",
-       "      <td>0</td>\n",
-       "      <td>0</td>\n",
-       "      <td>NaN</td>\n",
-       "    </tr>\n",
-       "    <tr>\n",
-       "      <th>4</th>\n",
-       "      <td>7888</td>\n",
-       "      <td>https://www.airbnb.com/rooms/7888</td>\n",
-       "      <td>20250306035046</td>\n",
-       "      <td>2025-03-07</td>\n",
-       "      <td>city scrape</td>\n",
-       "      <td>Pineapple House 2 Bed 1 Bath with Loft Entire ...</td>\n",
-       "      <td>We offer a medium term rental requiring a mini...</td>\n",
-       "      <td>NaN</td>\n",
-       "      <td>https://a0.muscache.com/pictures/hosting/Hosti...</td>\n",
-       "      <td>22083</td>\n",
-       "      <td>...</td>\n",
-       "      <td>4.76</td>\n",
-       "      <td>4.25</td>\n",
-       "      <td>4.60</td>\n",
-       "      <td>GE-104-390-7584-01</td>\n",
-       "      <td>f</td>\n",
-       "      <td>1</td>\n",
-       "      <td>1</td>\n",
-       "      <td>0</td>\n",
-       "      <td>0</td>\n",
-       "      <td>0.72</td>\n",
-       "    </tr>\n",
-       "  </tbody>\n",
-       "</table>\n",
-       "<p>5 rows × 79 columns</p>\n",
-       "</div>"
-      ],
-      "text/plain": [
-       "     id                        listing_url       scrape_id last_scraped  \\\n",
-       "0  5269  https://www.airbnb.com/rooms/5269  20250306035046   2025-03-14   \n",
-       "1  5387  https://www.airbnb.com/rooms/5387  20250306035046   2025-03-15   \n",
-       "2  5480  https://www.airbnb.com/rooms/5480  20250306035046   2025-03-14   \n",
-       "3  5532  https://www.airbnb.com/rooms/5532  20250306035046   2025-03-12   \n",
-       "4  7888  https://www.airbnb.com/rooms/7888  20250306035046   2025-03-07   \n",
-       "\n",
-       "            source                                               name  \\\n",
-       "0      city scrape          Upcountry Hospitality in the 'Auwai Suite   \n",
-       "1      city scrape                Hale Koa Studio & 1 Bedroom Units!!   \n",
-       "2      city scrape                 Isle Of You Naturally Farm Retreat   \n",
-       "3  previous scrape  2BR Waialua Beach Condo w/ Saltwater Pool & Sauna   \n",
-       "4      city scrape  Pineapple House 2 Bed 1 Bath with Loft Entire ...   \n",
-       "\n",
-       "                                         description  \\\n",
-       "0  The 'Auwai Suite is a lovely, self-contained a...   \n",
-       "1  This Wonderful Spacious Studio apt/flat is in ...   \n",
-       "2  The Best Choice for your Clothing Optional Nud...   \n",
-       "3  This split-level condo is right across the str...   \n",
-       "4  We offer a medium term rental requiring a mini...   \n",
-       "\n",
-       "                               neighborhood_overview  \\\n",
-       "0  We are located on the \"sunny side\" of Waimea, ...   \n",
-       "1  IN a Farm belt area with small commercial farm...   \n",
-       "2  We are located on a rural one lane road going ...   \n",
-       "3                                                NaN   \n",
-       "4                                                NaN   \n",
-       "\n",
-       "                                         picture_url  host_id  ...  \\\n",
-       "0  https://a0.muscache.com/pictures/5b52b72f-5a09...     7620  ...   \n",
-       "1  https://a0.muscache.com/pictures/1170713/dca6a...     7878  ...   \n",
-       "2  https://a0.muscache.com/pictures/75530989/8ed3...     8145  ...   \n",
-       "3  https://a0.muscache.com/pictures/13743/134691a...     8279  ...   \n",
-       "4  https://a0.muscache.com/pictures/hosting/Hosti...    22083  ...   \n",
-       "\n",
-       "  review_scores_communication review_scores_location review_scores_value  \\\n",
-       "0                        4.85                   5.00                4.85   \n",
-       "1                        4.88                   4.74                4.78   \n",
-       "2                         NaN                    NaN                 NaN   \n",
-       "3                         NaN                    NaN                 NaN   \n",
-       "4                        4.76                   4.25                4.60   \n",
-       "\n",
-       "              license instant_bookable calculated_host_listings_count  \\\n",
-       "0    119-269-5808-01R                f                              3   \n",
-       "1  TA-163-133-0304-01                t                              2   \n",
-       "2                 NaN                f                              3   \n",
-       "3                 NaN                f                              1   \n",
-       "4  GE-104-390-7584-01                f                              1   \n",
-       "\n",
-       "  calculated_host_listings_count_entire_homes  \\\n",
-       "0                                           3   \n",
-       "1                                           2   \n",
-       "2                                           0   \n",
-       "3                                           1   \n",
-       "4                                           1   \n",
-       "\n",
-       "  calculated_host_listings_count_private_rooms  \\\n",
-       "0                                            0   \n",
-       "1                                            0   \n",
-       "2                                            3   \n",
-       "3                                            0   \n",
-       "4                                            0   \n",
-       "\n",
-       "  calculated_host_listings_count_shared_rooms reviews_per_month  \n",
-       "0                                           0              0.24  \n",
-       "1                                           0              1.26  \n",
-       "2                                           0               NaN  \n",
-       "3                                           0               NaN  \n",
-       "4                                           0              0.72  \n",
-       "\n",
-       "[5 rows x 79 columns]"
-      ]
-     },
-     "execution_count": 3,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "df.head()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 4,
-   "id": "f6553eb0-92c7-4fde-8237-2bbe28340d5f",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "#Data Cleaning\n",
-    "\n",
-    "# Clean the price column\n",
-    "df[\"price\"] = df[\"price\"].replace({r\"[\\$,]\": \"\"}, regex=True).astype(float)\n",
-    "\n",
-    "#Drop NA rows\n",
-    "df = df.dropna(subset=[\"accommodates\", \"price\", \"room_type\", \"neighbourhood\", \"minimum_nights\", \"latitude\", \"longitude\"])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 5,
-   "id": "4140176b-04bf-4667-8070-979951caea61",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "2025-06-27 14:53:58.210 \n",
-      "  \u001b[33m\u001b[1mWarning:\u001b[0m to view this Streamlit app on a browser, run it with the following\n",
-      "  command:\n",
-      "\n",
-      "    streamlit run C:\\Users\\reece\\anaconda3\\Lib\\site-packages\\ipykernel_launcher.py [ARGUMENTS]\n"
-     ]
-    }
-   ],
-   "source": [
-    "# Sidebar Filters\n",
-    "st.sidebar.header(\"🔍 Filters\")\n",
-    "\n",
-    "# Accommodations\n",
-    "acc_options = [\"All\"] + sorted(df[\"accommodates\"].dropna().unique().tolist())\n",
-    "selected_acc = st.sidebar.selectbox(\"Accommodates\", acc_options)\n",
-    "\n",
-    "# Room Type\n",
-    "room_types = [\"All\"] + sorted(df[\"room_type\"].dropna().unique().tolist())\n",
-    "selected_room = st.sidebar.selectbox(\"Room Type\", room_types)\n",
-    "\n",
-    "# Neighbourhood\n",
-    "neighbourhoods = [\"All\"] + sorted(df[\"neighbourhood_group_cleansed\"].dropna().unique().tolist())\n",
-    "selected_neigh = st.sidebar.selectbox(\"Neighbourhoods\", neighbourhoods)\n",
-    "\n",
-    "# Minimum Nights\n",
-    "min_nights = st.sidebar.slider(\"Minimum Nights\", int(df[\"minimum_nights\"].min()), int(df[\"minimum_nights\"].max()), (1, 30))\n",
-    "\n",
-    "# Price Range\n",
-    "price_min, price_max = int(df[\"price\"].min()), int(df[\"price\"].max())\n",
-    "selected_price = st.sidebar.slider(\"Price range ($)\", price_min, price_max, (price_min, price_max))\n",
-    "\n",
-    "# Apply filters\n",
-    "filtered = df.copy()\n",
-    "\n",
-    "if selected_acc != \"All\":\n",
-    "    filtered = filtered[filtered[\"accommodates\"] == selected_acc]\n",
-    "\n",
-    "if selected_room != \"All\":\n",
-    "    filtered = filtered[filtered[\"room_type\"] == selected_room]\n",
-    "\n",
-    "if selected_neigh != \"All\":\n",
-    "    filtered = filtered[filtered[\"neighbourhood_group_cleansed\"] == selected_neigh]\n",
-    "\n",
-    "filtered = filtered[filtered[\"minimum_nights\"].between(*min_nights)]\n",
-    "filtered = filtered[filtered[\"price\"].between(*selected_price)]"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 6,
-   "id": "4cf308a6-c00a-4517-9aa4-8df029f47c33",
-   "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "DeltaGenerator()"
-      ]
-     },
-     "execution_count": 6,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "bar_chart = alt.Chart(filtered).mark_bar().encode(\n",
-    "    x=alt.X(\"room_type:N\", title=\"Room Type\"),\n",
-    "    y=alt.Y(\"mean(price):Q\", title=\"Average Price\"),\n",
-    "    tooltip=[\"room_type\", \"mean(price)\"]\n",
-    ").properties(title=\"Average Price by Room Type\")\n",
-    "\n",
-    "st.altair_chart(bar_chart, use_container_width=True)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 7,
-   "id": "d6016dda-fa70-400f-99c8-97f1b0b6178c",
-   "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "DeltaGenerator()"
-      ]
-     },
-     "execution_count": 7,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "hist_chart = alt.Chart(filtered).mark_bar().encode(\n",
-    "    x=alt.X(\"price:Q\", bin=alt.Bin(maxbins=40), title=\"Price ($)\"),\n",
-    "    y=alt.Y(\"count()\", title=\"Number of Listings\")\n",
-    ").properties(title=\"Price Distribution\")\n",
-    "\n",
-    "st.altair_chart(hist_chart, use_container_width=True)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 8,
-   "id": "b1a05996-1ad3-4461-acf9-8e4ccaf81a1f",
-   "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "DeltaGenerator()"
-      ]
-     },
-     "execution_count": 8,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "st.map(df[[\"latitude\", \"longitude\"]])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 9,
-   "id": "56fa4aa2-8323-4ee8-a00d-bc8f48fff185",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "st.title(\"🏠 Airbnb Listings Dashboard\")\n",
-    "\n",
-    "tab1, tab2, tab3, tab4 = st.tabs(\n",
-    "    [\"📄 Data table\", \"📊 Avg price chart\", \"📈 Price distribution\", \"🗺️ Map\"]\n",
-    ")\n",
-    "\n",
-    "with tab1:\n",
-    "    st.subheader(\"Filtered listings\")\n",
-    "    st.dataframe(filtered)\n",
-    "\n",
-    "with tab2:\n",
-    "    st.subheader(\"Average price by room type\")\n",
-    "    st.altair_chart(bar_chart, use_container_width=True)\n",
-    "\n",
-    "with tab3:\n",
-    "    st.subheader(\"Distribution of listing prices\")\n",
-    "    st.altair_chart(hist_chart, use_container_width=True)\n",
-    "\n",
-    "with tab4:\n",
-    "    st.subheader(\"Listing map\")\n",
-    "    st.map(filtered[[\"latitude\", \"longitude\"]])"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.11.7"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import streamlit as st
+import pandas as pd
+import altair as alt
+
+# Set page config
+st.set_page_config(page_title="Airbnb Dashboard", page_icon="🏠", layout="wide")
+
+# Load the compressed dataset
+df = pd.read_csv("listings (2).csv.gz", compression="gzip")
+
+# Clean price column
+df["price"] = df["price"].replace({r"[\$,]": ""}, regex=True).astype(float)
+
+# Sidebar Filters
+st.sidebar.header("🔍 Filters")
+
+room_types = ["All"] + sorted(df["room_type"].dropna().unique().tolist())
+selected_room = st.sidebar.selectbox("Room Type", room_types)
+
+neighborhoods = ["All"] + sorted(df["neighbourhood_group_cleansed"].dropna().unique().tolist())
+selected_neigh = st.sidebar.selectbox("Neighbourhood", neighborhoods)
+
+price_min = int(df["price"].min())
+price_max = int(df["price"].max())
+selected_price = st.sidebar.slider("Price Range", min_value=price_min, max_value=price_max, value=(50, 500))
+
+# Filter Data
+filtered = df.copy()
+if selected_room != "All":
+    filtered = filtered[filtered["room_type"] == selected_room]
+if selected_neigh != "All":
+    filtered = filtered[filtered["neighbourhood_group_cleansed"] == selected_neigh]
+filtered = filtered[filtered["price"].between(*selected_price)]
+
+# Dashboard Title
+st.title("🏠 Airbnb Listings Dashboard")
+
+# Overview Text
+st.markdown(
+    f"Showing listings for **{selected_room if selected_room != 'All' else 'all room types'}** "
+    f"in **{selected_neigh if selected_neigh != 'All' else 'all neighborhoods'}**, "
+    f"priced between **${selected_price[0]}–${selected_price[1]}**."
+)
+
+# Visualization Tabs
+tab1, tab2, tab3 = st.tabs(["📊 Charts", "🗺️ Map", "📋 Data"])
+
+with tab1:
+    st.subheader("Average Price by Room Type")
+    avg_price = filtered.groupby("room_type")["price"].mean().reset_index()
+    bar_chart = alt.Chart(avg_price).mark_bar().encode(
+        x=alt.X("room_type:N", title="Room Type"),
+        y=alt.Y("price:Q", title="Average Price ($)"),
+        tooltip=["room_type", "price"]
+    ).properties(width=600)
+    st.altair_chart(bar_chart, use_container_width=True)
+
+    st.subheader("Price Distribution")
+    hist_chart = alt.Chart(filtered).mark_bar().encode(
+        x=alt.X("price:Q", bin=alt.Bin(maxbins=40), title="Price ($)"),
+        y=alt.Y("count()", title="Number of Listings")
+    ).properties(width=600)
+    st.altair_chart(hist_chart, use_container_width=True)
+
+with tab2:
+    st.subheader("Listing Locations")
+    st.map(filtered[["latitude", "longitude"]].dropna())
+
+with tab3:
+    st.subheader("Filtered Listings")
+    st.dataframe(filtered)
+
