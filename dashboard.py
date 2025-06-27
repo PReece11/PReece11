@@ -57,7 +57,7 @@ with tab1:
     st.altair_chart(bar_chart, use_container_width=True)
 
     st.subheader("Price Distribution")
-    hist_chart = alt.Chart(filtered).mark_bar().encode(
+    hist_chart = alt.Chart(filtered).mark_bar(color='#FF7F0E').encode(
         x=alt.X("price:Q", bin=alt.Bin(maxbins=40), title="Price ($)"),
         y=alt.Y("count()", title="Number of Listings")
     ).properties(width=600)
