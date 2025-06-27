@@ -2,130 +2,122 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-# ---------- Page settings ----------
+# -------------------------------------------------
+# 0.  Page config
+# -------------------------------------------------
 st.set_page_config(
     page_title="Airbnb Listings Dashboard",
     page_icon="🏠",
     layout="wide"
 )
 
-# ---------- Load data ----------
-DATA_PATH = "listings (2).csv.gz"   # <— make sure this name matches your repo
-df = pd.read_csv(DATA_PATH, compression="gzip")
+# -------------------------------------------------
+# 1.  Load & clean data
+# -------------------------------------------------
+DATA_FILE = "listings (2).csv.gz"       # name in your repo
+df = pd.read_csv(DATA_FILE, compression="gzip")
 
-# Clean price column (remove $ and , then cast to float)
+# Clean "price" to numeric
 df["price"] = (
     df["price"]
       .replace({r"[\$,]": ""}, regex=True)
       .astype(float, errors="ignore")
 )
 
-# ---------- Sidebar filters ----------
+# -------------------------------------------------
+# 2.  Sidebar filters
+# -------------------------------------------------
 st.sidebar.header("🔍 Filters")
 
 room_types = ["All"] + sorted(df["room_type"].dropna().unique())
-selected_room = st.sidebar.selectbox("Room Type", room_types)
+sel_room   = st.sidebar.selectbox("Room type", room_types, index=0)
 
-neigh_opts = ["All"] + sorted(df["neighbourhood_group_cleansed"].dropna().unique())
-selected_neigh = st.sidebar.selectbox("Neighbourhood", neigh_opts)
+neighs = ["All"] + sorted(df["neighbourhood_group_cleansed"].dropna().unique())
+sel_neigh  = st.sidebar.selectbox("Neighbourhood", neighs, index=0)
 
-# Price slider (min/max rounded to nearest $10 for nicer UX)
-pmin, pmax = int(df["price"].min()), int(df["price"].max())
-selected_price = st.sidebar.slider(
-    "Price Range ($)",
-    min_value=pmin,
-    max_value=pmax,
-    value=(pmin, min(pmax, 500))  # default upper bound 500 for readability
+p_min, p_max = int(df["price"].min()), int(df["price"].max())
+sel_price = st.sidebar.slider(
+    "Price range ($)",
+    min_value=p_min,
+    max_value=p_max,
+    value=(p_min, p_max)              # default = full range so nothing is hidden
 )
 
-# ---------- Apply filters ----------
-filtered = df.copy()
-if selected_room != "All":
-    filtered = filtered[filtered["room_type"] == selected_room]
-if selected_neigh != "All":
-    filtered = filtered[filtered["neighbourhood_group_cleansed"] == selected_neigh]
-filtered = filtered[filtered["price"].between(*selected_price)]
+# -------------------------------------------------
+# 3.  Apply filters
+# -------------------------------------------------
+flt = df.copy()
+if sel_room != "All":
+    flt = flt[flt["room_type"] == sel_room]
+if sel_neigh != "All":
+    flt = flt[flt["neighbourhood_group_cleansed"] == sel_neigh]
+flt = flt[flt["price"].between(*sel_price)]
 
-# ---------- App title ----------
+# If nothing left, show a friendly warning
+if flt.empty:
+    st.warning("⚠️ No listings match the current filter combination. "
+               "Try widening your price range or choosing ‘All’.")
+    st.stop()
+
+# -------------------------------------------------
+# 4.  Intro text
+# -------------------------------------------------
 st.title("🏠 Airbnb Listings Dashboard")
-
 st.markdown(
-    f"Listings for **{selected_room if selected_room!='All' else 'all room types'}** "
-    f"in **{selected_neigh if selected_neigh!='All' else 'all neighbourhoods'}**, "
-    f"priced **${selected_price[0]:,} – ${selected_price[1]:,}**"
+    f"Showing **{len(flt):,} listings** for "
+    f"**{sel_room if sel_room != 'All' else 'all room types'}** "
+    f"in **{sel_neigh if sel_neigh != 'All' else 'all neighbourhoods'}**, "
+    f"priced **${sel_price[0]:,} – ${sel_price[1]:,}**."
 )
 
-# ------------------------------------------------------------
-# Tabs: Charts | Map | Data
-# ------------------------------------------------------------
-tab1, tab2, tab3 = st.tabs(["📊 Charts", "🗺️ Map", "📋 Data"])
+# -------------------------------------------------
+# 5.  Tabs
+# -------------------------------------------------
+tab_charts, tab_map, tab_data = st.tabs(["📊 Charts", "🗺️ Map", "📋 Data"])
 
-# ---------- TAB 1 : Charts ----------
-with tab1:
-    # Altair selection for interactive linking
-    click = alt.selection_single(
-        fields=["room_type"],
-        bind="legend",
-        name="Select",
-        clear="doubleclick"
-    )
+# ---------- TAB: Charts ----------
+with tab_charts:
+    # interactive selection
+    sel = alt.selection_single(fields=["room_type"], name="Pick",
+                               bind="legend", empty="all")
 
-    # ---- 1. Bar chart: avg price by room type ----
-    avg_price = (
-        filtered
-        .groupby("room_type", as_index=False)["price"]
-        .mean()
-    )
+    # 5a bar — avg price by room type
+    avg = flt.groupby("room_type", as_index=False)["price"].mean()
+    bar = (alt.Chart(avg)
+           .mark_bar()
+           .encode(
+               x="room_type:N",
+               y=alt.Y("price:Q", title="Avg price ($)"),
+               color=alt.condition(sel, alt.value("#1f77b4"), alt.value("#d3d3d3")),
+               tooltip=["room_type", alt.Tooltip("price:Q", format=".0f")]
+           )
+           .add_selection(sel)
+           .properties(title="Average price by room type", width=600))
 
-    bar = (
-        alt.Chart(avg_price)
-        .mark_bar()
-        .encode(
-            x=alt.X("room_type:N", title="Room Type"),
-            y=alt.Y("price:Q", title="Average Price ($)"),
-            color=alt.condition(
-                click, alt.value("#1f77b4"), alt.value("#d3d3d3")   
-            ),
-            tooltip=["room_type", alt.Tooltip("price:Q", format=".0f", title="Avg Price")]
-        )
-        .add_selection(click)
-        .properties(title="Average Price by Room Type", width=600)
-    )
+    # 5b histogram — linked
+    hist = (alt.Chart(flt)
+            .mark_bar(color="#1f77b4")
+            .encode(
+                x=alt.X("price:Q", bin=alt.Bin(maxbins=40), title="Price ($)"),
+                y=alt.Y("count()", title="Listing count")
+            )
+            .transform_filter(sel)
+            .properties(title="Price distribution", width=600))
 
     st.altair_chart(bar, use_container_width=True)
-
-    # ---- 2. Histogram: price distribution, filtered by bar-click ----
-    hist = (
-        alt.Chart(filtered)
-        .mark_bar(color="#1f77b4")
-        .encode(
-            x=alt.X("price:Q", bin=alt.Bin(maxbins=40), title="Price ($)"),
-            y=alt.Y("count()", title="Number of Listings")
-        )
-        .transform_filter(click)       
-        .properties(title="Price Distribution", width=600)
-    )
     st.altair_chart(hist, use_container_width=True)
 
-# ---------- TAB 2 : Map ----------
-with tab2:
-    st.subheader("Listing Locations")
-    st.map(
-        filtered[["latitude", "longitude"]].dropna(),
-        zoom=10,
-        use_container_width=True
-    )
+# ---------- TAB: Map ----------
+with tab_map:
+    st.subheader("Listing locations")
+    st.map(flt[["latitude", "longitude"]].dropna(), zoom=10)
 
-# ---------- TAB 3 : Data ----------
-with tab3:
-    st.subheader("Filtered Listings")
-    st.dataframe(filtered)
+# ---------- TAB: Data ----------
+with tab_data:
+    st.subheader("Filtered listings")
+    st.dataframe(flt)
 
-    # Optional download button
-    csv = filtered.to_csv(index=False).encode("utf-8")
-    st.download_button(
-        "📥 Download CSV",
-        csv,
-        file_name="airbnb_filtered_listings.csv",
-        mime="text/csv"
-    )
+    csv = flt.to_csv(index=False).encode("utf-8")
+    st.download_button("⬇️ Download CSV", csv,
+                       file_name="filtered_listings.csv",
+                       mime="text/csv")
