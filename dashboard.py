@@ -35,11 +35,6 @@ if sel_neigh != "All":
     flt = flt[flt["neighbourhood_group_cleansed"] == sel_neigh]
 flt = flt[flt["price"].between(*sel_price)]
 
-# Stop if empty
-if flt.empty:
-    st.warning("No listings match your filters. Try widening the price range.")
-    st.stop()
-
 # Title and summary
 st.title("🏠 Airbnb Listings Dashboard")
 st.markdown(f"Showing **{len(flt):,} listings** filtered by your selections.")
